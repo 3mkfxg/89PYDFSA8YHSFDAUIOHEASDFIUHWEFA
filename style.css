@@ -1068,21 +1068,22 @@ textarea:focus {
     padding: 0 !important;
     overflow: hidden;
     height: 85vh;
+    height: 85dvh;
 }
 
 .reader-layout {
     display: flex;
     height: 100%;
     width: 100%;
+    flex-direction: column; /* Permanent single-column toggle */
 }
 
 .reader-media-col {
-    flex: 1.4;
+    flex: 1; /* Always take full window in content mode */
     background: #000;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
     overflow: hidden;
 }
@@ -1099,6 +1100,8 @@ textarea:focus {
     position: relative;
     z-index: 2;
     animation: fadeInText 0.5s ease forwards;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .text-display.active {
@@ -1125,6 +1128,8 @@ textarea:focus {
     line-height: 1.3;
     text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
     letter-spacing: -0.5px;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .text-display-content {
@@ -1136,6 +1141,9 @@ textarea:focus {
     overflow-y: auto;
     padding-right: 1rem;
     scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .text-display-content::-webkit-scrollbar {
@@ -1155,6 +1163,7 @@ textarea:focus {
     padding-bottom: 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     width: 100%;
+    flex-shrink: 0;
 }
 
 .text-display-author .td-avatar {
@@ -1202,10 +1211,12 @@ textarea:focus {
 }
 
 .reader-info-col {
-    flex: 0.8;
-    display: flex;
+    display: none; /* Hidden by default - opened via button */
+    flex: 1;
     flex-direction: column;
     background: rgba(15, 15, 15, 0.95);
+    min-height: 0;
+    height: 100%;
 }
 
 .reader-header {
@@ -1214,6 +1225,7 @@ textarea:focus {
     justify-content: space-between;
     padding: 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
 }
 
 .reader-author {
@@ -1234,6 +1246,7 @@ textarea:focus {
     color: white;
     font-size: 1.1rem;
     border: 2px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
 }
 
 .author-details {
@@ -1255,11 +1268,14 @@ textarea:focus {
     flex: 1;
     overflow-y: auto;
     padding: 1rem;
+    -webkit-overflow-scrolling: touch;
+    min-height: 0;
 }
 
 .reader-actions {
     padding: 1rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
 }
 
 .action-icons {
@@ -1287,10 +1303,12 @@ textarea:focus {
     display: flex;
     align-items: center;
     padding: 0.8rem 1rem;
+    padding-bottom: max(0.8rem, env(safe-area-inset-bottom));
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     gap: 0.8rem;
     position: relative;
     z-index: 1005;
+    flex-shrink: 0;
 }
 
 .comment-textarea {
@@ -1298,10 +1316,15 @@ textarea:focus {
     background: transparent;
     border: none;
     color: #fff;
-    font-size: 0.95rem;
+    font-size: 1rem;
+    font-family: 'Outfit', sans-serif;
     resize: none;
-    height: 24px;
+    min-height: 36px;
+    height: 36px;
     outline: none;
+    padding: 6px 0;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .comment-post-btn {
@@ -1309,9 +1332,11 @@ textarea:focus {
     border: none;
     color: var(--accent-1);
     font-weight: 700;
-    font-size: 0.95rem;
+    font-size: 1rem;
     cursor: pointer;
     opacity: 0.8;
+    padding: 6px 4px;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .comment-post-btn:hover {
@@ -1323,7 +1348,211 @@ textarea:focus {
     border: none;
     color: #fff;
     cursor: pointer;
-    padding: 5px;
+    padding: 8px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Caption author name/avatar in reader */
+.caption-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 0.7rem;
+}
+
+.caption-author-name {
+    font-size: 0.9rem;
+}
+
+/* Reader caption content break-word */
+.reader-caption {
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+/* ============================================= */
+/* STORY / COMMENTS TWO-VIEW TOGGLE MODE         */
+/* ============================================= */
+
+/* --- Content Mode: Content takes full screen, comments hidden --- */
+.reader-panel.story-mode .reader-media-col {
+    display: flex !important;
+    height: 100% !important;
+}
+
+.reader-panel.story-mode .reader-info-col {
+    display: none !important;
+}
+
+/* --- Comments Mode: Comments take full screen, story hidden --- */
+.reader-panel.comments-mode .reader-layout {
+    flex-direction: column;
+}
+
+.reader-panel.comments-mode .reader-media-col {
+    display: none !important;
+}
+
+.reader-panel.comments-mode .reader-info-col {
+    flex: 1 !important;
+    display: flex !important;
+    height: 100% !important;
+    min-height: 0;
+}
+
+.reader-panel.comments-mode .back-to-story-btn {
+    display: flex;
+}
+
+/* --- Story View Header (Title + Close) --- */
+.story-view-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(10, 10, 10, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 10;
+    flex-shrink: 0;
+}
+
+.story-view-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #fff;
+    margin: 0;
+    letter-spacing: -0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 80%;
+    font-family: 'Outfit', sans-serif;
+}
+
+/* HACK: Circular Red 'X' Close Button from Mockup */
+.story-close-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: #ff3b30; /* iOS Red like the sketch */
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(255, 59, 48, 0.3);
+}
+
+.story-close-btn:hover {
+    filter: brightness(1.2);
+    transform: scale(1.1);
+}
+
+.story-close-btn:active {
+    transform: scale(0.9);
+}
+
+/* --- Story View Footer (Rounded Add Comment Button) --- */
+.story-view-footer {
+    padding: 1.2rem 1.5rem;
+    padding-bottom: calc(1.2rem + env(safe-area-inset-bottom));
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(10, 10, 10, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+    z-index: 10;
+}
+
+.story-footer-btn {
+    width: 100%;
+    max-width: 420px;
+    padding: 1.1rem;
+    border-radius: 60px; /* Highly oval like the sketch */
+    border: none;
+    background: var(--accent-1);
+    color: #fff;
+    font-weight: 800;
+    font-size: 1.15rem;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.story-footer-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    filter: brightness(1.15);
+}
+
+/* Hacker Theme Button Styles (#00ff41) */
+.hacker-theme-ig .story-footer-btn {
+    background: linear-gradient(135deg, #00ff41, #008f11);
+    box-shadow: 0 4px 15px rgba(0, 255, 65, 0.2);
+}
+
+/* Girly Theme Button Styles (#ff69b4) */
+.girly-theme-ig .story-footer-btn,
+.dalal-theme-ig .story-footer-btn {
+    background: linear-gradient(135deg, #ff69b4, #da1b81);
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.2);
+}
+
+/* Redesigned Story View Scroll Area */
+.reader-panel.story-mode .reader-media-col {
+    flex: 1 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    background: #050505;
+}
+
+.reader-panel.story-mode .text-display {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto !important;
+    padding: 2rem 1.5rem;
+    display: flex !important;
+    flex-direction: column;
+    justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
+}
+
+.reader-panel.story-mode .text-display-title {
+    display: none; /* Already in header */
+}
+
+/* Back Button in Comments View */
+.back-to-story-btn {
+    display: none;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.7rem;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.back-to-story-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(-3px);
 }
 
 /* ========================================= */
@@ -1356,9 +1585,10 @@ textarea:focus {
         height: 280px;
     }
 
-    /* Reader Modal - Stack vertically */
+    /* Reader Modal - Stack vertically on tablet */
     .reader-panel {
         height: 95vh;
+        height: 95dvh;
         max-width: 100% !important;
         width: 100% !important;
         border-radius: 16px !important;
@@ -1369,9 +1599,12 @@ textarea:focus {
     }
 
     .reader-media-col {
-        height: 45vh;
         flex: none;
-        min-height: 250px;
+        height: 40%;
+        min-height: 200px;
+        max-height: 45vh;
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .reader-info-col {
@@ -1390,6 +1623,7 @@ textarea:focus {
 
     .text-display-content {
         font-size: 1rem;
+        max-height: none;
     }
 
     /* Modal adjustments */
@@ -1398,44 +1632,56 @@ textarea:focus {
         width: 95% !important;
         padding: 1.5rem;
         max-height: 90vh;
+        max-height: 90dvh;
     }
 
     .ig-panel {
         max-width: 100% !important;
         border-radius: 18px;
     }
+
+    .ig-container {
+        padding: 1rem;
+    }
 }
 
-/* Phone (max 600px) */
+/* Phone (max 600px) — iPhone 11 and similar */
 @media (max-width: 600px) {
     body {
-        padding: 0;
-        align-items: flex-start;
+        padding: 7vw; /* Even more shrunk */
+        align-items: center;
+        justify-content: center;
     }
 
     .glass-panel {
         padding: 1.5rem;
-        border-radius: 0;
+        border-radius: 24px;
         max-width: 100% !important;
         width: 100% !important;
     }
 
     .ig-panel {
-        border-radius: 0;
-        max-height: 100vh;
-        padding: 1rem 0.8rem;
+        width: 100% !important;
+        max-width: 100% !important;
+        border-radius: 24px;
+        max-height: 85vh; /* Card height limit */
+        max-height: 85dvh;
+        overflow-y: auto; /* Enable vertical scrolling */
+        padding: 1.5rem 1rem;
+        -webkit-overflow-scrolling: touch;
     }
 
-    h1 {
-        font-size: 1.8rem;
+    /* Grid - 3 columns on phones (reverted per user request) */
+    .ig-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 2px;
     }
 
-    .header-area h2 {
-        font-size: 1.8rem;
-    }
-
-    .header-area {
-        margin-bottom: 2rem;
+    /* Compact text sizing for 3-col layout */
+    .ig-grid-item strong {
+        font-size: 0.7rem !important;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
     }
 
     /* Stack story cards vertically on phones */
@@ -1489,35 +1735,75 @@ textarea:focus {
         gap: 1px;
     }
 
-    /* Reader Modal - Full screen on phone */
-    .reader-panel {
-        height: 100vh;
-        width: 100vw !important;
-        max-width: 100vw !important;
-        border-radius: 0 !important;
-    }
-
+    /* ====================================== */
+    /* READER MODAL - Full screen on phone    */
+    /* Works on Chrome, Safari, iPhone 11+    */
+    /* ====================================== */
     .modal-overlay {
-        padding: 0;
+        padding: 5vw; /* Even more space around the modal */
+        align-items: center;
+        justify-content: center;
     }
 
+    .reader-panel {
+        height: 82vh; /* Even smaller height */
+        height: 82dvh;
+        width: 85vw !important; /* Even smaller width */
+        max-width: 85vw !important;
+        max-height: 82vh !important;
+        max-height: 82dvh !important;
+        border-radius: 28px !important; /* Slightly more rounded */
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
+    }
+
+    .reader-layout {
+        flex-direction: column;
+        height: 100%;
+    }
+
+    /* Story/Question text area — only take 35% so comments stay visible */
     .reader-media-col {
-        height: 40vh;
-        min-height: 200px;
+        flex: 1;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        border-right: none;
+        border-bottom: none;
+    }
+
+    /* Comments column fills the rest */
+    .reader-info-col {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
     }
 
     .text-display {
-        padding: 1.5rem;
+        padding: 1.2rem;
+        justify-content: flex-start;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     .text-display-title {
-        font-size: 1.3rem;
-        margin-bottom: 1rem;
+        font-size: 1.15rem;
+        margin-bottom: 0.6rem;
+        line-height: 1.4;
     }
 
     .text-display-content {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         line-height: 1.6;
+        max-height: none;
+        padding-right: 0.3rem;
+    }
+
+    .text-display-author {
+        margin-bottom: 0.8rem;
+        padding-bottom: 0.6rem;
+        gap: 0.6rem;
     }
 
     .text-display-author .td-avatar {
@@ -1530,36 +1816,108 @@ textarea:focus {
         font-size: 0.85rem;
     }
 
-    /* Comments area */
+    .text-display-author .td-date {
+        font-size: 0.7rem;
+    }
+
+    /* Comments area — scrollable */
     .comments-list {
         padding: 0.8rem;
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     .reader-header {
-        padding: 0.8rem;
+        padding: 0.7rem 0.8rem;
+        flex-shrink: 0;
     }
 
     .author-avatar {
-        width: 34px;
-        height: 34px;
-        font-size: 0.9rem;
+        width: 32px;
+        height: 32px;
+        font-size: 0.85rem;
+    }
+
+    .author-details strong {
+        font-size: 0.85rem;
+    }
+
+    .author-details span {
+        font-size: 0.7rem;
     }
 
     .reader-actions {
-        padding: 0.8rem;
+        padding: 0.6rem 0.8rem;
+        flex-shrink: 0;
     }
 
+    .action-icons {
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .action-icons svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .likes-count {
+        font-size: 0.8rem;
+    }
+
+    /* Comment input — always visible, safe area padding */
     .comment-input-area {
         padding: 0.6rem 0.8rem;
+        padding-bottom: max(0.6rem, env(safe-area-inset-bottom));
+        flex-shrink: 0;
+        gap: 0.6rem;
     }
 
-    /* Modals */
+    .comment-textarea {
+        font-size: 0.9rem;
+        min-height: 32px;
+        height: 32px;
+    }
+
+    .comment-post-btn {
+        font-size: 0.9rem;
+        padding: 4px 8px;
+    }
+
+    /* Caption area in reader */
+    .reader-caption {
+        padding-bottom: 0.8rem !important;
+    }
+
+    .reader-caption h2 {
+        font-size: 1.1rem !important;
+        margin-bottom: 0.3rem !important;
+    }
+
+    .reader-caption div[id="reader-content"] {
+        font-size: 0.85rem !important;
+    }
+
+    .caption-avatar {
+        width: 24px;
+        height: 24px;
+        font-size: 0.6rem;
+    }
+
+    .caption-author-name {
+        font-size: 0.8rem;
+    }
+
+    /* Modals (Add Story, Edit Bio, etc) */
     .glass-panel.modal-panel {
-        max-width: 100% !important;
-        width: 100% !important;
-        border-radius: 16px !important;
+        max-width: 85vw !important;
+        width: 85vw !important;
+        border-radius: 28px !important;
         padding: 1.5rem;
-        max-height: 85vh;
+        max-height: 82vh;
+        max-height: 82dvh;
     }
 
     .primary-btn {
@@ -1595,9 +1953,52 @@ textarea:focus {
     .blob-1 { width: 80vw; height: 80vw; }
     .blob-2 { width: 70vw; height: 70vw; }
     .blob-3 { width: 60vw; height: 60vw; }
+
+    /* Story/Comment mode on phones */
+    .story-view-header {
+        padding: 0.8rem 1rem;
+    }
+
+    .story-view-title {
+        font-size: 1.25rem;
+    }
+
+    .story-footer-btn {
+        padding: 0.8rem;
+        font-size: 1rem;
+    }
+
+    .reader-panel.story-mode .text-display {
+        padding: 1.2rem;
+    }
+
+    .reader-panel.story-mode .reader-media-col {
+        flex: 1 !important;
+        height: 100% !important;
+        max-height: 100% !important;
+    }
+
+    .story-close-btn {
+        width: 34px;
+        height: 34px;
+    }
+
+    .back-to-story-btn {
+        width: 32px;
+        height: 32px;
+    }
+
+    /* In comments mode on phones, full height comments */
+    .reader-panel.comments-mode .reader-info-col {
+        height: 100% !important;
+    }
+
+    .reader-panel.comments-mode .comment-input-area {
+        padding-bottom: max(0.6rem, env(safe-area-inset-bottom));
+    }
 }
 
-/* Very Small Phones (max 400px) */
+/* Very Small Phones (max 400px) — iPhone SE, etc. */
 @media (max-width: 400px) {
     .glass-panel {
         padding: 1rem;
@@ -1632,21 +2033,35 @@ textarea:focus {
         font-size: 1rem;
     }
 
+    .reader-media-col {
+        height: 30%;
+        min-height: 140px;
+        max-height: 30vh;
+        max-height: 30dvh;
+    }
+
     .text-display {
-        padding: 1rem;
+        padding: 0.8rem;
     }
 
     .text-display-title {
-        font-size: 1.1rem;
+        font-size: 1rem;
+        margin-bottom: 0.4rem;
     }
 
     .text-display-content {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
+        line-height: 1.5;
     }
 
-    .reader-media-col {
-        height: 35vh;
-        min-height: 180px;
+    .text-display-author .td-avatar {
+        width: 24px;
+        height: 24px;
+        font-size: 0.65rem;
+    }
+
+    .text-display-author .td-name {
+        font-size: 0.8rem;
     }
 
     .logo-area {
@@ -1660,6 +2075,43 @@ textarea:focus {
     input {
         padding: 0.8rem;
         font-size: 0.9rem;
+    }
+}
+
+/* Landscape mode on phones */
+@media (max-height: 500px) and (orientation: landscape) {
+    .reader-panel {
+        height: 100vh !important;
+        height: 100dvh !important;
+    }
+
+    .reader-layout {
+        flex-direction: row !important;
+    }
+
+    .reader-media-col {
+        flex: 1 !important;
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: unset !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: none;
+    }
+
+    .reader-info-col {
+        flex: 1 !important;
+    }
+
+    .text-display {
+        padding: 1rem;
+    }
+
+    .text-display-title {
+        font-size: 1rem;
+    }
+
+    .text-display-content {
+        font-size: 0.85rem;
     }
 }
 

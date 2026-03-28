@@ -60,6 +60,88 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedVideoBlob = null;
     let currentOpenPost = null;
 
+    // --- Build Story View UI Elements ---
+    const readerMediaCol = document.querySelector('.reader-media-col');
+    const readerInfoCol = document.querySelector('.reader-info-col');
+    const readerPanel = document.querySelector('.reader-panel');
+
+    // 1. Story Header (title + close button at top of story view)
+    const storyHeader = document.createElement('div');
+    storyHeader.className = 'story-view-header';
+    storyHeader.innerHTML = `
+        <h2 id="story-view-title" class="story-view-title">Title</h2>
+        <button class="story-close-btn" id="story-close-x">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+    `;
+    if (readerMediaCol) readerMediaCol.insertBefore(storyHeader, readerMediaCol.firstChild);
+
+    // 2. Story Footer - Large ROUNDED Add Comment Button (Mockup style)
+    const storyFooter = document.createElement('div');
+    storyFooter.className = 'story-view-footer';
+    storyFooter.innerHTML = `
+        <button id="story-footer-comment-btn" class="story-footer-btn">
+            Add Comment
+        </button>
+    `;
+    if (readerMediaCol) readerMediaCol.appendChild(storyFooter);
+
+    // 3. Back-to-story button in comments header
+    const backToStoryBtn = document.createElement('button');
+    backToStoryBtn.id = 'back-to-story-btn';
+    backToStoryBtn.className = 'back-to-story-btn';
+    backToStoryBtn.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>`;
+    const readerHeader = document.querySelector('.reader-header');
+    if (readerHeader) readerHeader.insertBefore(backToStoryBtn, readerHeader.firstChild);
+
+    // --- Mode Toggle Functions ---
+    function setStoryMode() {
+        if (readerPanel) {
+            readerPanel.classList.add('story-mode');
+            readerPanel.classList.remove('comments-mode');
+        }
+    }
+
+    function setCommentsMode() {
+        if (readerPanel) {
+            readerPanel.classList.remove('story-mode');
+            readerPanel.classList.add('comments-mode');
+        }
+    }
+
+    function closeReaderModal() {
+        playerVideo.pause();
+        playerVideo.src = '';
+        currentOpenPost = null;
+        storyReaderModal.classList.remove('active');
+        if (readerPanel) {
+            readerPanel.classList.remove('story-mode');
+            readerPanel.classList.remove('comments-mode');
+        }
+        setTimeout(() => storyReaderModal.classList.add('hidden'), 300);
+    }
+
+    // Story Footer button → switch to comments
+    const footerCommentBtn = document.getElementById('story-footer-comment-btn');
+    if (footerCommentBtn) {
+        footerCommentBtn.addEventListener('click', () => {
+            setCommentsMode();
+        });
+    }
+
+    // Story close button → close modal
+    const storyCloseX = document.getElementById('story-close-x');
+    if (storyCloseX) {
+        storyCloseX.addEventListener('click', closeReaderModal);
+    }
+
+    // Back to story button → switch to story
+    backToStoryBtn.addEventListener('click', () => {
+        setStoryMode();
+    });
+
+    // Removed old story view comment post handler since it's replaced by the "Add Comment" button that switches view
+
     // --- Supabase Cloud Database ---
     const SUPABASE_URL = 'https://lezmniypicjcbyetucvz.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxlem1uaXlwaWNqY2J5ZXR1Y3Z6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MTg4MDgsImV4cCI6MjA5MDI5NDgwOH0.Q5UHhIr_wd2XqNFQJKu2F2hfAjsrm-RhjbU8PNRhfo8';
@@ -67,13 +149,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const initDB = async () => {
         console.log("☁️ Cloud Database (Supabase) connected.");
-        return true; 
+        return true;
     };
 
     // Save a post (story/video/question) to the cloud
     const saveToDB = async (storeName, data) => {
         console.log(`☁️ Cloud Save to ${storeName}:`, data);
-        
+
         if (storeName === 'comments') {
             const { error: commentError } = await _supabase
                 .from('comments')
@@ -90,14 +172,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const { error } = await _supabase
             .from('posts')
-            .insert([{ 
-                store_name: storeName, 
-                title: data.title || '', 
-                content: data.content || '', 
+            .insert([{
+                store_name: storeName,
+                title: data.title || '',
+                content: data.content || '',
                 video_url: data.video_url || '',
-                date: data.date 
+                date: data.date
             }]);
-        
+
         if (error) throw error;
     };
 
@@ -108,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .select('*')
             .eq('store_name', storeName)
             .order('id', { ascending: false });
-        
+
         if (error) {
             console.error('Error loading stories:', error);
             return [];
@@ -124,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .eq('store_name', storeName)
             .eq('post_id', postId)
             .order('date', { ascending: false });
-        
+
         if (error) {
             console.error('Error loading comments:', error);
             return [];
@@ -198,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
             storyContainer.style.backgroundPosition = 'center';
             storyContainer.style.backgroundBlendMode = 'overlay';
             storyContainer.classList.add('has-wallpaper');
-            
+
             document.body.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${savedWallpaper})`;
             document.body.style.backgroundSize = 'cover';
             document.body.style.backgroundPosition = 'center';
@@ -210,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Show/Hide buttons based on ownership
-        const isOwner = ownerAccounts.some(acc => 
+        const isOwner = ownerAccounts.some(acc =>
             String(acc).toUpperCase() === String(currentUser).toUpperCase()
         );
 
@@ -229,7 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
         storyContainer.style.display = 'block';
 
         const category = window.CURRENT_CATEGORY || 'story';
-        
+
         // Update tab active state based on CURRENT_CATEGORY
         document.querySelectorAll('.ig-tab').forEach(t => t.classList.remove('active'));
         const activeTab = document.getElementById('tab-' + category + 's');
@@ -248,16 +330,16 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadGridContent(category) {
         const storeName = `user_${category}s_${currentStory}`;
         let items = [];
-        
+
         try {
             items = await loadFromDB(storeName);
         } catch (e) {
             console.error(e);
         }
-        
+
         const addBtn = document.getElementById('add-post-btn');
         const isOwner = ownerAccounts.some(acc => String(acc).toUpperCase() === String(currentUser).toUpperCase());
-        
+
         gridContainer.innerHTML = '';
         if (addBtn && isOwner) {
             addBtn.classList.remove('hidden');
@@ -279,18 +361,18 @@ document.addEventListener('DOMContentLoaded', () => {
             item.style.fontSize = '0.8rem';
             item.style.textAlign = 'center';
             item.style.cursor = 'pointer';
-            
+
             let icon = '📖';
             if (category === 'video' || data.video_url) icon = '🎬';
             if (category === 'question') icon = '❓';
-            
+
             item.innerHTML = `<span style="font-size:1.5rem;margin-bottom:5px;">${icon}</span><strong style="display:block;margin-bottom:2px;">${data.title}</strong><span style="opacity:0.7;font-size:0.7rem;">Click to view</span>`;
-            
+
             item.onclick = async () => {
                 currentOpenPost = { category, id: data.id, storeName };
                 readerTitle.textContent = data.title;
                 readerContent.textContent = data.content;
-                
+
                 // Update Sidebar Info from cloud
                 let profileName = defaultData[currentStory] ? defaultData[currentStory].name : currentStory;
                 try {
@@ -300,7 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         .eq('username', currentStory)
                         .single();
                     if (profileData) profileName = profileData.full_name || profileName;
-                } catch(e) {}
+                } catch (e) { }
 
                 if (readerAuthorName) readerAuthorName.textContent = profileName;
                 if (readerAvatar) readerAvatar.textContent = profileName.charAt(0).toUpperCase();
@@ -318,9 +400,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const captionBox = document.getElementById('reader-caption-box');
                 const currentCategory = window.CURRENT_CATEGORY || 'story';
 
-                // Handle Video vs Text Layout
+                // Unified Two-View Toggle (Primary vs Comments)
                 if (currentCategory === 'video') {
-                    // VIDEO PAGE: keep original layout (video left, info right)
+                    // Start in Primary Mode (Show Video)
                     if (data.video_url) {
                         playerVideo.src = data.video_url;
                         videoContainer.classList.remove('hidden');
@@ -330,12 +412,19 @@ document.addEventListener('DOMContentLoaded', () => {
                         videoContainer.classList.add('hidden');
                     }
                     if (textDisplay) textDisplay.classList.remove('active');
-                    if (captionBox) captionBox.style.display = 'block';
+                    if (captionBox) captionBox.style.display = 'none';
+
+                    // Update the HEADER TITLE for video
+                    const storyTitle = document.getElementById('story-view-title');
+                    if (storyTitle) storyTitle.textContent = data.title;
+
+                    // Ensure we are in primary 'story-mode' view (shows video + header/footer)
+                    setStoryMode();
                 } else {
-                    // STORY / QUESTION PAGE: show title + content on the LEFT (black side)
+                    // Primary Mode (Show Text)
                     playerVideo.src = '';
                     videoContainer.classList.add('hidden');
-                    
+
                     if (textDisplay) {
                         tdTitle.textContent = data.title;
                         tdContent.textContent = data.content;
@@ -343,19 +432,26 @@ document.addEventListener('DOMContentLoaded', () => {
                         tdName.textContent = profileName;
                         tdDate.textContent = timeAgo(data.date);
                         textDisplay.classList.add('active');
+
+                        // Update the HEADER TITLE for text
+                        const storyTitle = document.getElementById('story-view-title');
+                        if (storyTitle) storyTitle.textContent = data.title;
                     }
-                    
+
                     // Hide the caption from the right side (avoid duplicate)
                     if (captionBox) captionBox.style.display = 'none';
+
+                    // Start in primary 'story-mode' (Shows content + new header/footer)
+                    setStoryMode();
                 }
-                
+
                 // Load Comments
                 renderComments();
 
                 storyReaderModal.classList.remove('hidden');
                 setTimeout(() => storyReaderModal.classList.add('active'), 10);
             };
-            
+
             gridContainer.appendChild(item);
         });
 
@@ -438,7 +534,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     savedBio = data.bio || savedBio;
                     savedWallpaper = data.wallpaper || null;
                 }
-            } catch(e) {}
+            } catch (e) { }
 
             editName.value = savedName;
             bioEditor.value = savedBio;
@@ -479,8 +575,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Save profile to CLOUD DATABASE
                 const { error } = await _supabase
                     .from('profiles')
-                    .update({ 
-                        bio: newBio, 
+                    .update({
+                        bio: newBio,
                         full_name: newName,
                         wallpaper: uploadedWallpaper || ''
                     })
@@ -511,15 +607,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 storyVideoFile.value = '';
                 videoNameDisplay.textContent = 'No video chosen';
                 selectedVideoBlob = null;
-                
+
                 const category = window.CURRENT_CATEGORY || 'story';
-                
+
                 if (category === 'video') {
                     videoUploadSection.classList.remove('hidden');
                 } else {
                     videoUploadSection.classList.add('hidden');
                 }
-                
+
                 addStoryModal.classList.remove('hidden');
                 setTimeout(() => addStoryModal.classList.add('active'), 10);
             } else {
@@ -559,9 +655,9 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Posting content for category:", category, "Title:", title);
 
             const storeName = `user_${category}s_${currentStory}`;
-            const data = { 
-                title, 
-                content, 
+            const data = {
+                title,
+                content,
                 date: new Date().toISOString(),
                 video_url: ''
             };
@@ -574,7 +670,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         .storage
                         .from('videos')
                         .upload(fileName, selectedVideoBlob);
-                    
+
                     if (!uploadError && uploadData) {
                         const { data: urlData } = _supabase
                             .storage
@@ -588,14 +684,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             await saveToDB(storeName, data);
-            
+
             alert(`${category.charAt(0).toUpperCase() + category.slice(1)} posted successfully!`);
-            
+
             storyTitleInput.value = '';
             storyContentInput.value = '';
             if (storyVideoFile) storyVideoFile.value = '';
             selectedVideoBlob = null;
-            
+
             await loadGridContent(category);
 
             addStoryModal.classList.remove('active');
@@ -609,6 +705,10 @@ document.addEventListener('DOMContentLoaded', () => {
             playerVideo.src = '';
             currentOpenPost = null;
             storyReaderModal.classList.remove('active');
+            if (readerPanel) {
+                readerPanel.classList.remove('story-mode');
+                readerPanel.classList.remove('comments-mode');
+            }
             setTimeout(() => storyReaderModal.classList.add('hidden'), 300);
         });
     }
@@ -617,7 +717,7 @@ document.addEventListener('DOMContentLoaded', () => {
         postCommentBtn.addEventListener('click', async () => {
             const input = document.getElementById('comment-input');
             const text = input ? input.value.trim() : "";
-            
+
             console.log("Post Comment Clicked. Content:", text, "PostID:", currentOpenPost ? currentOpenPost.id : 'NONE');
 
             if (!text) {
@@ -652,10 +752,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function renderComments() {
         if (!currentOpenPost) return;
-        
+
         const comments = await loadCommentsForPost(currentOpenPost.storeName, currentOpenPost.id);
         actualComments.innerHTML = '';
-        
+
         if (comments.length === 0) {
             actualComments.innerHTML = '<p style="opacity:0.5; font-size:0.8rem;">No comments yet. Be the first!</p>';
             return;
@@ -691,10 +791,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const category = getCategoryFromTab(tab.id);
             const userPrefix = currentStory.toLowerCase();
             let targetFile = userPrefix + '.html';
-            
+
             if (category === 'video') targetFile = userPrefix + '_vids.html';
             if (category === 'question') targetFile = userPrefix + '_ask.html';
-            
+
             window.location.href = targetFile;
         });
     });

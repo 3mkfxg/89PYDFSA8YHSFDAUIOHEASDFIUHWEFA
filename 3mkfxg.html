@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3MK F X G - Questions</title>
+    <title>3MK F X G</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -42,7 +42,7 @@
         </div>
 
         <div class="ig-tabs">
-            <div class="ig-tab" id="tab-stories">
+            <div class="ig-tab active" id="tab-stories">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
                     <path d="M12 5v14M5 12h14" />
                 </svg>
@@ -59,7 +59,7 @@
                     <line x1="17" y1="7" x2="22" y2="7" />
                 </svg>
             </div>
-            <div class="ig-tab active" id="tab-questions">
+            <div class="ig-tab" id="tab-questions">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                     <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
@@ -74,7 +74,7 @@
                     <line x1="12" y1="5" x2="12" y2="19" />
                     <line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
-                <span>Add Question</span>
+                <span>Add Story</span>
             </div>
         </div>
     </main>
@@ -82,18 +82,17 @@
     <!-- Add Story Modal -->
     <div id="add-story-modal" class="modal-overlay hidden">
         <div class="glass-panel modal-panel">
-            <h2>Post New Question</h2>
-            <p class="modal-hint">Ask your followers something!</p>
+            <h2>Create New Story</h2>
+            <p class="modal-hint">Share your thoughts with your followers!</p>
 
             <div class="modal-section-v">
-                <label class="edit-label">Topic</label>
-                <input type="text" id="story-title-input" placeholder="e.g. What do you think about..."
-                    class="edit-input">
+                <label class="edit-label">Story Title</label>
+                <input type="text" id="story-title-input" placeholder="e.g. My First Day at IU" class="edit-input">
             </div>
 
             <div class="modal-section-v">
-                <label class="edit-label">Details</label>
-                <textarea id="story-content-input" rows="8" placeholder="Add more context to your question..."
+                <label class="edit-label">Story Content</label>
+                <textarea id="story-content-input" rows="8" placeholder="Start typing your story here..."
                     class="edit-input"></textarea>
             </div>
 
@@ -121,7 +120,7 @@
 
             <div class="modal-actions">
                 <button id="save-story-btn" class="primary-btn">
-                    <span>Post Question</span>
+                    <span>Post Story</span>
                 </button>
                 <button id="cancel-story-btn" class="secondary-btn" style="margin-top: 1rem;">Back</button>
             </div>
@@ -168,7 +167,7 @@
                     </div>
 
                     <div id="comments-list" class="comments-list">
-                        <!-- Caption and Description (Questions) -->
+                        <!-- Caption and Description (Stories) -->
                         <div id="reader-caption-box" class="reader-caption"
                             style="border-bottom: 1px solid rgba(0, 255, 65, 0.2); padding-bottom: 1rem;">
                             <div class="reader-author" style="margin-bottom: 0.5rem;">
@@ -265,7 +264,7 @@
     <script>
         window.CURRENT_STORY_ID = '3MKFXG';
         window.OWNER_ACCOUNTS = ['1', '3MKFXG'];
-        window.CURRENT_CATEGORY = 'question';
+        window.CURRENT_CATEGORY = 'story';
     </script>
     <script src="story.js"></script>
 </body>
