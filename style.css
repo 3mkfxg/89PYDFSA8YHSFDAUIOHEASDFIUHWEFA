@@ -27,7 +27,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 /* Dynamic Background Elements */
@@ -1305,21 +1306,340 @@ textarea:focus {
     padding: 5px;
 }
 
-/* Mobile Adjustments */
+/* ========================================= */
+/* RESPONSIVE DESIGN - ALL SCREEN SIZES      */
+/* ========================================= */
+
+/* Tablet & Small Desktop (max 900px) */
 @media (max-width: 900px) {
+    body {
+        align-items: flex-start;
+        padding: 1rem;
+    }
+
+    .glass-panel {
+        padding: 2rem;
+        max-width: 100% !important;
+        border-radius: 18px;
+    }
+
+    #choice-container.active {
+        max-width: 100%;
+    }
+
+    .cards-wrapper {
+        gap: 1.5rem;
+    }
+
+    .story-card {
+        min-width: 200px;
+        height: 280px;
+    }
+
+    /* Reader Modal - Stack vertically */
     .reader-panel {
         height: 95vh;
-        max-width: 500px !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        border-radius: 16px !important;
     }
+
     .reader-layout {
         flex-direction: column;
     }
+
     .reader-media-col {
-        height: 50vh;
+        height: 45vh;
         flex: none;
+        min-height: 250px;
     }
+
     .reader-info-col {
         flex: 1;
+        min-height: 0;
+    }
+
+    /* Text display adjustments */
+    .text-display {
+        padding: 2rem;
+    }
+
+    .text-display-title {
+        font-size: 1.6rem;
+    }
+
+    .text-display-content {
+        font-size: 1rem;
+    }
+
+    /* Modal adjustments */
+    .glass-panel.modal-panel {
+        max-width: 95% !important;
+        width: 95% !important;
+        padding: 1.5rem;
+        max-height: 90vh;
+    }
+
+    .ig-panel {
+        max-width: 100% !important;
+        border-radius: 18px;
+    }
+}
+
+/* Phone (max 600px) */
+@media (max-width: 600px) {
+    body {
+        padding: 0;
+        align-items: flex-start;
+    }
+
+    .glass-panel {
+        padding: 1.5rem;
+        border-radius: 0;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    .ig-panel {
+        border-radius: 0;
+        max-height: 100vh;
+        padding: 1rem 0.8rem;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    .header-area h2 {
+        font-size: 1.8rem;
+    }
+
+    .header-area {
+        margin-bottom: 2rem;
+    }
+
+    /* Stack story cards vertically on phones */
+    .cards-wrapper {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .story-card {
+        min-width: unset;
+        width: 100%;
+        height: 200px;
+    }
+
+    .card-content h3 {
+        font-size: 1.8rem;
+    }
+
+    .card-content .subtitle {
+        font-size: 1rem;
+        letter-spacing: 2px;
+    }
+
+    /* Profile page */
+    .ig-nav {
+        margin-bottom: 1rem;
+    }
+
+    .ig-username {
+        font-size: 1.2rem;
+    }
+
+    .ig-bio {
+        margin-bottom: 1rem;
+    }
+
+    .ig-fullname {
+        font-size: 0.95rem;
+    }
+
+    .ig-bio-text {
+        font-size: 0.85rem;
+    }
+
+    .ig-actions {
+        margin-bottom: 1rem;
+    }
+
+    /* Grid - 3 columns on phones */
+    .ig-grid {
+        gap: 1px;
+    }
+
+    /* Reader Modal - Full screen on phone */
+    .reader-panel {
+        height: 100vh;
+        width: 100vw !important;
+        max-width: 100vw !important;
+        border-radius: 0 !important;
+    }
+
+    .modal-overlay {
+        padding: 0;
+    }
+
+    .reader-media-col {
+        height: 40vh;
+        min-height: 200px;
+    }
+
+    .text-display {
+        padding: 1.5rem;
+    }
+
+    .text-display-title {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+    }
+
+    .text-display-content {
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .text-display-author .td-avatar {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+    }
+
+    .text-display-author .td-name {
+        font-size: 0.85rem;
+    }
+
+    /* Comments area */
+    .comments-list {
+        padding: 0.8rem;
+    }
+
+    .reader-header {
+        padding: 0.8rem;
+    }
+
+    .author-avatar {
+        width: 34px;
+        height: 34px;
+        font-size: 0.9rem;
+    }
+
+    .reader-actions {
+        padding: 0.8rem;
+    }
+
+    .comment-input-area {
+        padding: 0.6rem 0.8rem;
+    }
+
+    /* Modals */
+    .glass-panel.modal-panel {
+        max-width: 100% !important;
+        width: 100% !important;
+        border-radius: 16px !important;
+        padding: 1.5rem;
+        max-height: 85vh;
+    }
+
+    .primary-btn {
+        padding: 1rem;
+        font-size: 1rem;
+    }
+
+    .secondary-btn {
+        padding: 0.8rem 1.5rem;
+    }
+
+    .upload-btn {
+        padding: 0.8rem 1.2rem;
+        font-size: 0.9rem;
+    }
+
+    .edit-input {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    /* Buttons */
+    .ig-icon-btn {
+        padding: 0.6rem;
+    }
+
+    .ig-action-btn {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    /* Background blobs - smaller on mobile */
+    .blob-1 { width: 80vw; height: 80vw; }
+    .blob-2 { width: 70vw; height: 70vw; }
+    .blob-3 { width: 60vw; height: 60vw; }
+}
+
+/* Very Small Phones (max 400px) */
+@media (max-width: 400px) {
+    .glass-panel {
+        padding: 1rem;
+    }
+
+    .ig-panel {
+        padding: 0.8rem 0.6rem;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .header-area h2 {
+        font-size: 1.5rem;
+    }
+
+    .story-card {
+        height: 160px;
+    }
+
+    .card-content h3 {
+        font-size: 1.4rem;
+    }
+
+    .ig-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+    }
+
+    .ig-username {
+        font-size: 1rem;
+    }
+
+    .text-display {
+        padding: 1rem;
+    }
+
+    .text-display-title {
+        font-size: 1.1rem;
+    }
+
+    .text-display-content {
+        font-size: 0.85rem;
+    }
+
+    .reader-media-col {
+        height: 35vh;
+        min-height: 180px;
+    }
+
+    .logo-area {
+        margin-bottom: 1.5rem;
+    }
+
+    .input-group {
+        margin-bottom: 1rem;
+    }
+
+    input {
+        padding: 0.8rem;
+        font-size: 0.9rem;
     }
 }
 
