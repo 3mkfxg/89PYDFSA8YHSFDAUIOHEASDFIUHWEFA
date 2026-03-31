@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dalal - Questions 🌸</title>
+    <title>Dalal - Photos 🌸</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -29,7 +29,7 @@
             <h2 id="story-title" class="ig-username">Dalal 🌸</h2>
             <button id="edit-bio-btn" class="ig-icon-btn hidden">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2-2v-7" />
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                 </svg>
             </button>
@@ -46,7 +46,7 @@
                     <path d="M12 5v14M5 12h14" />
                 </svg>
             </div>
-            <div class="ig-tab" id="tab-photos" title="Media">
+            <div class="ig-tab active" id="tab-photos" title="Media">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                     <circle cx="8.5" cy="8.5" r="1.5" />
@@ -54,7 +54,7 @@
                     <path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14v-4z" />
                 </svg>
             </div>
-            <div class="ig-tab active" id="tab-questions">
+            <div class="ig-tab" id="tab-questions">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                     <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
@@ -69,7 +69,7 @@
                     <line x1="12" y1="5" x2="12" y2="19" />
                     <line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
-                <span>Add Question</span>
+                <span>Add Photo</span>
             </div>
         </div>
     </main>
@@ -77,9 +77,9 @@
     <!-- Modals -->
     <div id="add-story-modal" class="modal-overlay hidden">
         <div class="glass-panel modal-panel">
-            <h2>Post Question 🌸</h2>
+            <h2>Post Photo 🌸</h2>
             <div class="modal-section-v">
-                <label class="edit-label">Question</label>
+                <label class="edit-label">Title</label>
                 <input type="text" id="story-title-input" class="edit-input">
             </div>
             <div class="modal-section-v" id="text-content-section">
@@ -93,7 +93,7 @@
                 <span id="video-name-display">No photo selected</span>
             </div>
             <div class="modal-actions">
-                <button id="save-story-btn" class="primary-btn">Post Question 🌸</button>
+                <button id="save-story-btn" class="primary-btn">Post Photo 🌸</button>
                 <button id="warning-story-btn" class="warning-btn" style="margin-top: 1rem; background: #ff2d55; border: none; padding: 12px; border-radius: 12px; color: white; font-weight: 800; cursor: pointer; width: 100%;">
                     🚨 WORNING +18 🔞
                 </button>
@@ -167,7 +167,7 @@
             </div>
             <div class="modal-section-v">
                 <label class="edit-label">Wallpaper</label>
-                <input type="file" id="edit-wallpaper-file" class="file-input-hidden">
+                <input type="file" id="edit-wallpaper-file" accept="image/*" class="file-input-hidden">
                 <label for="edit-wallpaper-file" class="upload-btn">Upload</label>
                 <span id="file-name-display"></span>
             </div>
@@ -181,7 +181,7 @@
     <script>
         window.CURRENT_STORY_ID = 'DALAL';
         window.OWNER_ACCOUNTS = ['dalal', 'DALAL'];
-        window.CURRENT_CATEGORY = 'question';
+        window.CURRENT_CATEGORY = 'photo';
     </script>
     <script src="story.js"></script>
 </body>
