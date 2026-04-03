@@ -18,6 +18,7 @@
         <div class="blob blob-2"></div>
         <div class="blob blob-3"></div>
     </div>
+    <video id="wallpaper-video" class="wallpaper-video" autoplay loop muted playsinline></video>
 
     <main id="story-container" class="glass-panel ig-panel dalal-theme-ig">
         <div class="ig-nav">
@@ -164,9 +165,15 @@
             </div>
             <div class="modal-section-v">
                 <label class="edit-label">Wallpaper</label>
-                <input type="file" id="edit-wallpaper-file" class="file-input-hidden">
-                <label for="edit-wallpaper-file" class="upload-btn">Upload</label>
-                <span id="file-name-display"></span>
+                <div class="file-upload-wrapper">
+                    <input type="file" id="edit-wallpaper-file" accept="image/*,video/*" class="file-input-hidden">
+                    <label for="edit-wallpaper-file" class="upload-btn">Upload Photo/Video</label>
+                    <span id="file-name-display" class="file-name-display"></span>
+                </div>
+                <div id="wallpaper-preview-container" class="wallpaper-preview-container hidden">
+                    <img id="wallpaper-preview-img" src="" alt="Wallpaper Preview" class="hidden">
+                    <video id="wallpaper-preview-video" autoplay loop muted playsinline class="hidden" style="width: 100%; border-radius: 12px; margin-top: 10px;"></video>
+                </div>
             </div>
             <div class="modal-actions">
                 <button id="save-bio-btn" class="primary-btn">Save 🌸</button>

@@ -1,16 +1,16 @@
 :root {
-    --bg-dark: #0a0a0f;
+    --bg-dark: #000000;
     --text-primary: #ffffff;
     --text-secondary: #a0a0b0;
-    --accent-1: #6E56CF;
+    --accent-1: #a70fee;
     /* Purple */
-    --accent-2: #E5484D;
+    --accent-2: #ff070f;
     /* Red */
     --accent-3: #12A594;
     /* Teal */
-    --glass-bg: rgba(20, 20, 30, 0.4);
-    --glass-border: rgba(255, 255, 255, 0.08);
-    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --glass-bg: rgba(25, 25, 30, 0.45);
+    --glass-border: rgba(2, 2, 2, 0.12);
+    --glass-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.5);
 }
 
 * {
@@ -99,20 +99,35 @@ body {
 
 /* Glass Panels */
 .glass-panel {
-    background: var(--glass-bg);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: rgba(25, 25, 30, 0.15);
+    backdrop-filter: blur(15px) saturate(160%);
+    -webkit-backdrop-filter: blur(15px) saturate(160%);
     border: 1px solid var(--glass-border);
-    border-radius: 24px;
+    border-radius: 32px;
     box-shadow: var(--glass-shadow);
     padding: 3rem;
     width: 100%;
     max-width: 440px;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     position: absolute;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(20px) scale(0.95);
+    transform: translateY(30px) scale(0.92);
+    outline: 1px solid rgba(255, 255, 255, 0.05);
+    outline-offset: -1px;
+}
+
+.glass-panel::after, .ig-panel::after, .modal-panel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 2px solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.08); /* Red refraction */
+    border-left-color: rgba(0, 0, 0, 0.08); /* Cyan refraction */
+    pointer-events: none;
+    z-index: 5;
+    filter: blur(1px);
 }
 
 .glass-panel.active {
@@ -135,6 +150,82 @@ body {
 #choice-container.active {
     max-width: 800px;
 }
+
+/* Liquid Glass System */
+.liquid-glass {
+    position: relative;
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    display: block;
+}
+
+.liquid-glass-no-blur {
+    backdrop-filter: blur(0px) saturate(100%) !important;
+    -webkit-backdrop-filter: blur(0px) saturate(100%) !important;
+}
+
+/* Chromatic Aberration Effect */
+.chromatic-aberration {
+    position: relative;
+}
+
+.chromatic-aberration::after {
+    content: "";
+    position: absolute;
+    top: -2px; left: -2px; right: -2px; bottom: -2px;
+    border-radius: inherit;
+    border: 2px solid transparent;
+    border-top-color: rgba(255, 0, 0, 0.15);
+    border-left-color: rgba(0, 255, 255, 0.15);
+    pointer-events: none;
+    z-index: 5;
+    filter: blur(1px);
+}
+
+/* Animated Background variant */
+.liquid-glass-animated {
+    background-image: url('assets/chrome1.png');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.liquid-glass-animated::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+    z-index: 1;
+}
+
+/* Button & Inline Variants */
+.liquid-glass-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.liquid-glass-button:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.liquid-glass-inline {
+    display: inline-flex;
+    vertical-align: middle;
+}
+
+.rounded-50 { border-radius: 50px !important; }
+.rounded-30 { border-radius: 30px !important; }
+.rounded-full { border-radius: 9999px !important; }
 
 /* Login Typography */
 .logo-area {
@@ -242,7 +333,7 @@ input:focus~.glow-line {
     width: 100%;
     padding: 1.2rem;
     border: none;
-    border-radius: 14px;
+    border-radius: 16px;
     background: linear-gradient(135deg, var(--accent-1), #9785e8);
     color: white;
     font-size: 1.2rem;
@@ -251,13 +342,29 @@ input:focus~.glow-line {
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 8px 16px rgba(110, 86, 207, 0.3);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 10px 25px rgba(110, 86, 207, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.primary-btn::after {
+    content: "";
+    position: absolute;
+    top: -1px; left: -1px; right: -1px; bottom: -1px;
+    border-radius: inherit;
+    border: 1px solid transparent;
+    border-top-color: rgba(255, 255, 255, 0.3);
+    border-left-color: rgba(255, 255, 255, 0.2);
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0.5;
 }
 
 .primary-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(110, 86, 207, 0.4);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(110, 86, 207, 0.5);
+    filter: saturate(1.2);
 }
 
 .primary-btn:active {
@@ -630,14 +737,17 @@ input:focus~.glow-line {
     width: 95%;
     max-height: 85vh;
     overflow-y: auto;
-    transform: translateY(20px);
+    transform: translateY(30px) scale(0.92);
     opacity: 0;
     visibility: hidden;
     pointer-events: auto;
-    transition: all 0.4s ease;
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     z-index: 1000;
-    padding: 2rem;
+    padding: 2.5rem;
     scrollbar-width: thin;
+    background: rgba(30, 30, 35, 0.0005);
+    backdrop-filter: blur(10px) saturate(180%);
+    -webkit-backdrop-filter: blur(10px) saturate(180%);
 }
 
 .modal-overlay.active .glass-panel.modal-panel {
@@ -684,9 +794,16 @@ textarea:focus {
     padding: max(1.5rem, env(safe-area-inset-top)) 1rem max(2rem, env(safe-area-inset-bottom));
     overflow-y: auto;
     max-height: 95vh;
-    border-radius: 24px;
+    border-radius: 32px;
     width: 100%;
     max-width: 520px !important;
+    background: rgba(25, 25, 30, 0.15);
+    backdrop-filter: blur(15px) saturate(160%);
+    -webkit-backdrop-filter: blur(15px) saturate(160%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    outline: 1px solid rgba(255, 255, 255, 0.05);
+    outline-offset: -1px;
 }
 
 .hidden {
@@ -701,8 +818,8 @@ textarea:focus {
 }
 
 .ig-icon-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     color: var(--text-primary);
     cursor: pointer;
     padding: 0.8rem;
@@ -710,12 +827,28 @@ textarea:focus {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    position: relative;
+    overflow: hidden;
+}
+
+.ig-icon-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1.5px solid transparent;
+    border-top-color: rgba(255, 0, 0, 0.1);
+    border-left-color: rgba(0, 255, 255, 0.1);
+    pointer-events: none;
 }
 
 .ig-icon-btn:hover {
     background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.1);
+    transform: scale(1.15);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 .ig-username {
@@ -810,20 +943,37 @@ textarea:focus {
 .ig-action-btn {
     flex: 1;
     padding: 0.8rem 1rem;
-    border-radius: 10px;
-    border: none;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
     font-weight: 700;
     font-size: 1rem;
     cursor: pointer;
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.1);
     color: white;
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     text-transform: none;
     letter-spacing: 0.5px;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    position: relative;
+    overflow: hidden;
+}
+
+.ig-action-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid transparent;
+    border-top-color: rgba(255, 255, 255, 0.2);
+    border-left-color: rgba(255, 255, 255, 0.1);
+    pointer-events: none;
 }
 
 .ig-action-btn:hover {
     background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
 }
 
 .hacker-theme-ig .ig-action-btn {
@@ -2304,4 +2454,41 @@ textarea:focus {
 .btn-warning:hover {
     filter: brightness(1.2);
     transform: translateY(-1px);
+}
+
+/* Video Wallpaper Styles */
+.wallpaper-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -2; /* Behind the blobs and content */
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+.wallpaper-preview-container {
+    margin-top: 1rem;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid var(--glass-border);
+}
+
+#wallpaper-preview-img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+#wallpaper-preview-video {
+    width: 100%;
+    max-height: 200px;
+    border-radius: 12px;
+    object-fit: cover;
+    margin-top: 0rem;
+    border: none;
 }

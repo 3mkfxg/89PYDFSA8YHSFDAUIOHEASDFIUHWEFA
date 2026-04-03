@@ -18,6 +18,7 @@
         <div class="blob blob-2"></div>
         <div class="blob blob-3"></div>
     </div>
+    <video id="wallpaper-video" class="wallpaper-video" autoplay loop muted playsinline></video>
 
     <!-- Story Display Container (Insta Style) -->
     <main id="story-container" class="glass-panel ig-panel hacker-theme-ig">
@@ -233,7 +234,7 @@
             <div class="modal-section-v">
                 <label class="edit-label">Profile Wallpaper</label>
                 <div class="file-upload-wrapper">
-                    <input type="file" id="edit-wallpaper-file" accept="image/*" class="file-input-hidden">
+                    <input type="file" id="edit-wallpaper-file" accept="image/*,video/*" class="file-input-hidden">
                     <label for="edit-wallpaper-file" class="upload-btn">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20"
                             height="20" style="margin-right: 0.5rem;">
@@ -241,12 +242,13 @@
                             <polyline points="17 8 12 3 7 8" />
                             <line x1="12" y1="3" x2="12" y2="15" />
                         </svg>
-                        Upload Photo
+                        Upload Photo/Video
                     </label>
                     <span id="file-name-display" class="file-name-display">No file chosen</span>
                 </div>
                 <div id="wallpaper-preview-container" class="wallpaper-preview-container hidden">
-                    <img id="wallpaper-preview-img" src="" alt="Wallpaper Preview">
+                    <img id="wallpaper-preview-img" src="" alt="Wallpaper Preview" class="hidden">
+                    <video id="wallpaper-preview-video" autoplay loop muted playsinline class="hidden" style="width: 100%; border-radius: 12px; margin-top: 10px;"></video>
                 </div>
                 <button id="clear-wallpaper-btn" class="secondary-btn" style="margin-top: 1rem;">Reset
                     Wallpaper</button>

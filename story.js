@@ -26,6 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const wallpaperPreviewImg = document.getElementById('wallpaper-preview-img');
     const saveBioBtn = document.getElementById('save-bio-btn');
     const cancelBioBtn = document.getElementById('cancel-bio-btn');
+    const wallpaperVideo = document.getElementById('wallpaper-video');
+    const wallpaperPreviewVideo = document.getElementById('wallpaper-preview-video');
 
     const addStoryModal = document.getElementById('add-story-modal');
     const addPostBtn = document.getElementById('add-post-btn');
@@ -58,7 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const captionAuthorName = document.querySelector('.caption-author-name');
     const captionAvatar = document.querySelector('.caption-avatar');
 
-    let uploadedWallpaper = null;
+    let uploadedWallpaper = null; // This will hold the URL or base64
+    let selectedWallpaperBlob = null;
     let selectedVideoBlob = null;
     let currentOpenPost = null;
 
@@ -247,15 +250,38 @@ document.addEventListener('DOMContentLoaded', () => {
         if (igFullname) igFullname.textContent = savedName;
 
         if (savedWallpaper) {
-            storyContainer.style.backgroundImage = `url(${savedWallpaper})`;
-            storyContainer.style.backgroundSize = 'cover';
-            storyContainer.style.backgroundPosition = 'center';
-            storyContainer.classList.add('has-wallpaper');
-            document.body.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${savedWallpaper})`;
-            document.body.style.backgroundSize = 'cover';
-            document.body.style.backgroundPosition = 'center';
-            document.body.style.backgroundAttachment = 'fixed';
+            const isVideo = savedWallpaper.split('?')[0].toLowerCase().match(/\.(mp4|webm|mov|m4v|ogv)$/);
+            
+            if (isVideo) {
+                if (wallpaperVideo) {
+                    wallpaperVideo.src = savedWallpaper;
+                    wallpaperVideo.classList.remove('hidden');
+                    wallpaperVideo.play().catch(e => console.log("Autoplay blocked:", e));
+                }
+                storyContainer.style.backgroundImage = 'none';
+                document.body.style.backgroundImage = 'none';
+                storyContainer.classList.add('has-wallpaper');
+            } else {
+                if (wallpaperVideo) {
+                    wallpaperVideo.pause();
+                    wallpaperVideo.src = '';
+                    wallpaperVideo.classList.add('hidden');
+                }
+                storyContainer.style.backgroundImage = `url(${savedWallpaper})`;
+                storyContainer.style.backgroundSize = 'cover';
+                storyContainer.style.backgroundPosition = 'center';
+                storyContainer.classList.add('has-wallpaper');
+                document.body.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${savedWallpaper})`;
+                document.body.style.backgroundSize = 'cover';
+                document.body.style.backgroundPosition = 'center';
+                document.body.style.backgroundAttachment = 'fixed';
+            }
         } else {
+            if (wallpaperVideo) {
+                wallpaperVideo.pause();
+                wallpaperVideo.src = '';
+                wallpaperVideo.classList.add('hidden');
+            }
             storyContainer.style.backgroundImage = 'none';
             storyContainer.classList.remove('has-wallpaper');
             document.body.style.backgroundImage = '';
@@ -263,11 +289,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const isOwner = ownerAccounts.some(acc => String(acc).toUpperCase() === String(currentUser).toUpperCase());
         if (isOwner) {
-            if (editBioBtn) editBioBtn.style.display = 'flex';
-            if (shareProfileBtn) shareProfileBtn.style.display = 'flex';
+            if (editBioBtn) editBioBtn.classList.remove('hidden');
+            if (shareProfileBtn) shareProfileBtn.classList.remove('hidden');
         } else {
-            if (editBioBtn) editBioBtn.style.display = 'none';
-            if (shareProfileBtn) shareProfileBtn.style.display = 'none';
+            if (editBioBtn) editBioBtn.classList.add('hidden');
+            if (shareProfileBtn) shareProfileBtn.classList.add('hidden');
         }
 
         storyContainer.classList.remove('hidden');
@@ -448,21 +474,59 @@ document.addEventListener('DOMContentLoaded', () => {
         editWallpaperFile.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
+                // Client-side size check (e.g., 200MB limit)
+                if (file.size > 200 * 1024 * 1024) {
+                    alert("This file is too big (over 200MB)! Please choose a smaller video or increase your Supabase limit.");
+                    editWallpaperFile.value = '';
+                    fileNameDisplay.textContent = 'No file chosen';
+                    return;
+                }
+
                 fileNameDisplay.textContent = file.name;
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    uploadedWallpaper = event.target.result;
-                    if (wallpaperPreviewImg) { wallpaperPreviewImg.src = uploadedWallpaper; wallpaperPreviewContainer.classList.remove('hidden'); }
-                };
-                reader.readAsDataURL(file);
+                selectedWallpaperBlob = file;
+                const isVideo = file.type.startsWith('video/');
+                
+                if (isVideo) {
+                    const videoUrl = URL.createObjectURL(file);
+                    if (wallpaperPreviewVideo) {
+                        wallpaperPreviewVideo.src = videoUrl;
+                        wallpaperPreviewVideo.classList.remove('hidden');
+                    }
+                    if (wallpaperPreviewImg) wallpaperPreviewImg.classList.add('hidden');
+                    wallpaperPreviewContainer.classList.remove('hidden');
+                } else {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        if (wallpaperPreviewImg) {
+                            wallpaperPreviewImg.src = event.target.result;
+                            wallpaperPreviewImg.classList.remove('hidden');
+                        }
+                        if (wallpaperPreviewVideo) {
+                            wallpaperPreviewVideo.pause();
+                            wallpaperPreviewVideo.src = '';
+                            wallpaperPreviewVideo.classList.add('hidden');
+                        }
+                        wallpaperPreviewContainer.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                }
             }
         });
     }
 
     if (clearWallpaperBtn) {
         clearWallpaperBtn.addEventListener('click', () => {
-            uploadedWallpaper = null; editWallpaperFile.value = ''; fileNameDisplay.textContent = 'No file chosen';
-            if (wallpaperPreviewContainer) { wallpaperPreviewContainer.classList.add('hidden'); wallpaperPreviewImg.src = ''; }
+            uploadedWallpaper = null;
+            selectedWallpaperBlob = null;
+            editWallpaperFile.value = '';
+            fileNameDisplay.textContent = 'No file chosen';
+            if (wallpaperPreviewContainer) wallpaperPreviewContainer.classList.add('hidden');
+            if (wallpaperPreviewImg) { wallpaperPreviewImg.src = ''; wallpaperPreviewImg.classList.add('hidden'); }
+            if (wallpaperPreviewVideo) {
+                wallpaperPreviewVideo.pause();
+                wallpaperPreviewVideo.src = '';
+                wallpaperPreviewVideo.classList.add('hidden');
+            }
         });
     }
 
@@ -475,19 +539,91 @@ document.addEventListener('DOMContentLoaded', () => {
                 const { data } = await _supabase.from('profiles').select('*').eq('username', currentStory).single();
                 if (data) { savedName = data.full_name || savedName; savedBio = data.bio || savedBio; savedWallpaper = data.wallpaper || null; }
             } catch (e) { }
-            editName.value = savedName; bioEditor.value = savedBio; uploadedWallpaper = savedWallpaper;
-            if (uploadedWallpaper && wallpaperPreviewContainer) { wallpaperPreviewImg.src = uploadedWallpaper; wallpaperPreviewContainer.classList.remove('hidden'); }
+            editName.value = savedName; bioEditor.value = savedBio; 
+            uploadedWallpaper = savedWallpaper;
+            selectedWallpaperBlob = null;
+
+            if (uploadedWallpaper && wallpaperPreviewContainer) {
+                const isVideo = uploadedWallpaper.split('?')[0].toLowerCase().match(/\.(mp4|webm|mov|m4v|ogv)$/);
+                if (isVideo) {
+                    if (wallpaperPreviewVideo) {
+                        wallpaperPreviewVideo.src = uploadedWallpaper;
+                        wallpaperPreviewVideo.classList.remove('hidden');
+                    }
+                    if (wallpaperPreviewImg) wallpaperPreviewImg.classList.add('hidden');
+                } else {
+                    if (wallpaperPreviewImg) {
+                        wallpaperPreviewImg.src = uploadedWallpaper;
+                        wallpaperPreviewImg.classList.remove('hidden');
+                    }
+                    if (wallpaperPreviewVideo) wallpaperPreviewVideo.classList.add('hidden');
+                }
+                wallpaperPreviewContainer.classList.remove('hidden');
+            } else {
+                if (wallpaperPreviewContainer) wallpaperPreviewContainer.classList.add('hidden');
+            }
+
             editModal.classList.remove('hidden'); setTimeout(() => editModal.classList.add('active'), 10);
         });
     }
 
     if (saveBioBtn) {
         saveBioBtn.addEventListener('click', async () => {
+            saveBioBtn.disabled = true;
+            const originalText = saveBioBtn.textContent;
+            saveBioBtn.textContent = 'Saving...';
+
+            let wallpaperToSave = uploadedWallpaper;
+
+            if (selectedWallpaperBlob) {
+                console.log("Starting wallpaper upload for:", selectedWallpaperBlob.name);
+                try {
+                    // Sanitize filename to avoid "Invalid key" errors from special characters/spaces
+                    const cleanFileName = selectedWallpaperBlob.name.replace(/[^a-zA-Z0-9.]/g, '_');
+                    const fileName = `wallpaper_${currentStory}_${Date.now()}_${cleanFileName}`;
+                    
+                    const { data: uploadData, error: uploadError } = await _supabase.storage.from('videos').upload(fileName, selectedWallpaperBlob);
+                    if (!uploadError && uploadData) {
+                        const { data: urlData } = _supabase.storage.from('videos').getPublicUrl(fileName);
+                        wallpaperToSave = urlData.publicUrl;
+                        console.log("Upload success, public URL:", wallpaperToSave);
+                    } else {
+                        console.error("Storage upload error:", uploadError);
+                        alert("Storage Error: " + (uploadError.message || "Unknown error") + " - Check your bucket permissions!");
+                    }
+                } catch (e) {
+                    console.error("Upload exception:", e);
+                    alert("Upload Exception: " + e.message);
+                }
+            }
+
+            console.log("Upserting profile for:", currentStory, "with wallpaper:", wallpaperToSave);
             try {
-                await _supabase.from('profiles').update({ bio: bioEditor.value.trim(), full_name: editName.value.trim(), wallpaper: uploadedWallpaper || '' }).eq('username', currentStory);
-            } catch (e) { alert("Failed to save profile."); }
-            await loadProfileData();
-            editModal.classList.remove('active'); setTimeout(() => editModal.classList.add('hidden'), 300);
+                const { error: upsertError } = await _supabase.from('profiles').upsert({ 
+                    username: currentStory,
+                    bio: bioEditor.value.trim(), 
+                    full_name: editName.value.trim(), 
+                    wallpaper: wallpaperToSave || '' 
+                }, { onConflict: 'username' });
+
+                if (upsertError) {
+                    console.error("Database upsert error:", upsertError);
+                    alert("Database Error: " + upsertError.message);
+                } else {
+                    console.log("Profile saved successfully!");
+                    alert("Profile saved successfully!");
+                }
+            } catch (e) { 
+                console.error("Save exception:", e);
+                alert("Failed to save profile: " + e.message); 
+            } finally {
+                saveBioBtn.disabled = false;
+                saveBioBtn.textContent = originalText;
+                await loadProfileData();
+                editModal.classList.remove('active'); 
+                setTimeout(() => editModal.classList.add('hidden'), 300);
+                selectedWallpaperBlob = null; // Clear blob after successful save
+            }
         });
     }
 
@@ -510,7 +646,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (storyVideoFile) {
         storyVideoFile.addEventListener('change', (e) => {
             const file = e.target.files[0];
-            if (file) { videoNameDisplay.textContent = file.name; selectedVideoBlob = file; }
+            if (file) {
+                // Client-side size check (e.g., 200MB limit)
+                if (file.size > 200 * 1024 * 1024) {
+                    alert("This file is too big (over 200MB)! Please choose a smaller video or increase your Supabase limit.");
+                    storyVideoFile.value = '';
+                    videoNameDisplay.textContent = 'No media chosen';
+                    return;
+                }
+                videoNameDisplay.textContent = file.name; 
+                selectedVideoBlob = file; 
+            }
         });
     }
 
@@ -535,7 +681,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (category === 'photo' && selectedVideoBlob) {
             try {
-                const fileName = `${Date.now()}_${selectedVideoBlob.name}`;
+                // Sanitize filename to avoid "Invalid key" errors from special characters/spaces
+                const cleanFileName = selectedVideoBlob.name.replace(/[^a-zA-Z0-9.]/g, '_');
+                const fileName = `${Date.now()}_${cleanFileName}`;
+                
                 const { data: uploadData, error: uploadError } = await _supabase.storage.from('videos').upload(fileName, selectedVideoBlob);
                 if (!uploadError && uploadData) {
                     const { data: urlData } = _supabase.storage.from('videos').getPublicUrl(fileName);
@@ -594,7 +743,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         comments.forEach(c => {
             const div = document.createElement('div');
-            div.style.marginBottom = '1.2rem'; div.style.background = 'rgba(255,255,255,0.08)'; div.style.padding = '1rem'; div.style.borderRadius = '12px'; div.style.border = '1px solid rgba(255,255,255,0.1)';
+            div.style.marginBottom = '1.2rem'; div.style.background = 'rgba(167, 70, 70, 0.08)'; div.style.padding = '1rem'; div.style.borderRadius = '12px'; div.style.border = '1px solid rgba(255,255,255,0.1)';
             div.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items: center; margin-bottom: 0.5rem;">
                     <div style="display:flex; align-items:center; gap: 0.5rem;">
