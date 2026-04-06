@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warning - Read Carefully</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-elements">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2" style="background: radial-gradient(circle, var(--accent-2), transparent 70%);"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Warning Container -->
+    <main id="warning-container" class="glass-panel active warning-panel">
+        <div class="warning-header">WARNING</div>
+        
+        <p class="warning-description">
+            PLEASE READ AND WATCH CAREFULLY BEFORE PROCEEDING TO THE NEXT STEP. 
+            YOUR CHOICES WILL DETERMINE YOUR PATH.
+            <span class="headphone-warning">PLEASE PUT ON HEADPHONES BECAUSE 3MKFXG WILL TALK IN THE VIDEOS.</span>
+        </p>
+
+        <div class="video-container">
+            <video controls playsinline>
+                <source src="FORWEB.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <div class="warning-footer">
+            <button onclick="window.location.href='choices.html'" class="primary-btn">
+                <span>Continue</span>
+                <div class="btn-glow"></div>
+            </button>
+        </div>
+    </main>
+
+    <script>
+        // Ensure the button is only available after a short delay or video interaction if desired
+        // For now, it's immediately available as requested
+    </script>
+</body>
+</html>

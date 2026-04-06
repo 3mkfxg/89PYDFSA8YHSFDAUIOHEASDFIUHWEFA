@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // If already logged in, skip login
     if (localStorage.getItem('currentUser')) {
-        window.location.href = 'choices.html';
+        window.location.href = 'warning.html';
     }
 
     loginForm.addEventListener('submit', async (e) => {
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 // Login success!
                 localStorage.setItem('currentUser', data.username);
-                window.location.href = 'choices.html';
+                window.location.href = 'warning.html';
             }
         } catch (err) {
             console.error('Login error:', err);
